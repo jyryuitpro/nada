@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nada/services/notification_services.dart';
 import 'package:nada/services/theme_services.dart';
+import 'package:nada/ui/themes.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Get.isDarkMode ? darkGreyClr : Colors.white,
       appBar: _appBar(),
       body: Column(
         children: [
@@ -40,6 +42,8 @@ class _HomePageState extends State<HomePage> {
 
   AppBar _appBar() {
     return AppBar(
+      elevation: 0,
+      backgroundColor: context.theme.backgroundColor,
       leading: GestureDetector(
         onTap: () {
           ThemeServices().switchTheme();
@@ -53,14 +57,19 @@ class _HomePageState extends State<HomePage> {
           notifyHelper.scheduledNotification();
         },
         child: Icon(
-          Icons.nightlight_round,
+          Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
           size: 20,
+          color: Get.isDarkMode ? Colors.white : Colors.black,
         ),
       ),
       actions: [
-        Icon(
-          Icons.person,
-          size: 20,
+        CircleAvatar(
+          radius: 15,
+          backgroundColor: Colors.white,
+          child: Image.asset(
+            'images/profile.png',
+            height: 20,
+          ),
         ),
         SizedBox(
           width: 20,
