@@ -1,8 +1,13 @@
+import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:nada/services/notification_services.dart';
 import 'package:nada/services/theme_services.dart';
+import 'package:nada/ui/add_task_page.dart';
 import 'package:nada/ui/themes.dart';
+import 'package:nada/ui/widgets/my_button.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -12,6 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DateTime _selectedDate = DateTime.now();
   var notifyHelper;
 
   @override
@@ -29,15 +35,85 @@ class _HomePageState extends State<HomePage> {
       appBar: _appBar(),
       body: Column(
         children: [
-          Text(
-            'Theme Data',
-            style: TextStyle(
-              fontSize: 30,
-            ),
-          ),
+          _addTaskBar(),
+          _addDateBar(),
         ],
       ),
     );
+  }
+
+  Container _addDateBar() {
+    return Container(
+          margin: const EdgeInsets.only(
+            left: 20,
+            top: 20
+          ),
+          child: DatePicker(
+            DateTime.now(),
+            height: 100,
+            width: 80,
+            initialSelectedDate: DateTime.now(),
+            selectionColor: primaryClr,
+            selectedTextColor: Colors.white,
+            dateTextStyle: GoogleFonts.lato(
+              textStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            dayTextStyle: GoogleFonts.lato(
+              textStyle: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            monthTextStyle: GoogleFonts.lato(
+              textStyle: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey,
+              ),
+            ),
+            onDateChange: (selectedDate) {
+              setState(() {
+                _selectedDate = selectedDate;
+              });
+            },
+          ),
+        );
+  }
+
+  Container _addTaskBar() {
+    return Container(
+          margin: const EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 10,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      DateFormat.yMMMMd().format(DateTime.now()),
+                      style: subHeadingTextStyle,
+                    ),
+                    Text(
+                      'Today',
+                      style: headingTextStyle,
+                    ),
+                  ],
+                ),
+              ),
+              MyButton(label: '+ Add Task', onTap: () => Get.to(AddTaskPage())),
+            ],
+          ),
+        );
   }
 
   AppBar _appBar() {
@@ -68,6 +144,7 @@ class _HomePageState extends State<HomePage> {
           backgroundColor: Colors.white,
           child: Image.asset(
             'images/profile.png',
+            width: 20,
             height: 20,
           ),
         ),

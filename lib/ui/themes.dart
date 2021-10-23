@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:google_fonts/google_fonts.dart';
-// import 'package:get/get.dart';
+import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 const Color bluishClr = Color(0xFF4e5ae8);
 const Color yellowClr = Color(0xFFFFB746);
@@ -16,6 +16,7 @@ class Themes {
     primaryColor: primaryClr,
     brightness: Brightness.light,
   );
+
   static final dark = ThemeData(
     backgroundColor: darkGreyClr,
     primaryColor: darkGreyClr,
@@ -23,40 +24,44 @@ class Themes {
   );
 }
 
-// TextStyle get headingTextStyle {
-//   return GoogleFonts.lato(
-//     textStyle: TextStyle(
-//         fontSize: 24,
-//         fontWeight: FontWeight.bold,
-//         color: Get.isDarkMode ? Colors.white : Colors.black),
-//   );
-// }
+TextStyle get subHeadingTextStyle {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 20,
+      fontWeight: FontWeight.bold,
+      color: Get.isDarkMode ? Colors.grey[400] : Colors.grey,
+    ),
+  );
+}
 
-// TextStyle get subHeadingTextStyle {
-//   return GoogleFonts.lato(
-//     textStyle: TextStyle(
-//         fontSize: 20,
-//         fontWeight: FontWeight.w400,
-//         color: Get.isDarkMode ? Colors.grey[400] : Colors.grey),
-//   );
-// }
+TextStyle get headingTextStyle {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 30,
+      fontWeight: FontWeight.bold,
+      color: Get.isDarkMode ? Colors.white : Colors.black,
+    ),
+  );
+}
 
-// TextStyle get titleTextStle {
-//   return GoogleFonts.lato(
-//     textStyle: TextStyle(
-//         fontSize: 18,
-//         fontWeight: FontWeight.bold,
-//         color: Get.isDarkMode ? Colors.white : Colors.black),
-//   );
-// }
+TextStyle get titleStyle {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+      color: Get.isDarkMode ? Colors.white : Colors.black,
+    ),
+  );
+}
 
-// TextStyle get subTitleTextStle {
-//   return GoogleFonts.lato(
-//     textStyle: TextStyle(
-//         fontSize: 16,
-//         color: Get.isDarkMode ? Colors.grey[400] : Colors.grey[700]),
-//   );
-// }
+TextStyle get subTitleStyle {
+  return GoogleFonts.lato(
+    textStyle: TextStyle(
+      fontSize: 14,
+      color: Get.isDarkMode ? Colors.grey[100] : Colors.grey[600],
+    ),
+  );
+}
 
 // TextStyle get bodyTextStyle {
 //   return GoogleFonts.lato(
