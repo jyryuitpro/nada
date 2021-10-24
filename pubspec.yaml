@@ -41,6 +41,8 @@ dependencies:
   date_picker_timeline:
   flutter_local_notifications:
   flutter_native_timezone:
+  sqflite:
+  animated_splash_screen:
 
 dev_dependencies:
   flutter_test:

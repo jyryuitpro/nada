@@ -1,12 +1,15 @@
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:nada/db/db_helper.dart';
 import 'package:nada/services/theme_services.dart';
 import 'package:nada/ui/home_page.dart';
 import 'package:nada/ui/themes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DBHelper.initDb();
   await GetStorage.init();
   runApp(const MyApp());
 }
@@ -23,7 +26,13 @@ class MyApp extends StatelessWidget {
       theme: Themes.light,
       darkTheme: Themes.dark,
       themeMode: ThemeServices().theme,
-      home: const HomePage(),
+      home: AnimatedSplashScreen(
+        duration: 3000,
+        splash: Image.asset('images/splash.png'),
+        nextScreen: const HomePage(),
+        splashTransition: SplashTransition.fadeTransition ,
+        backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+      ),
     );
   }
 }
