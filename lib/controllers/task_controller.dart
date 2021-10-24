@@ -5,6 +5,7 @@ import 'package:nada/models/task.dart';
 class TaskController extends GetxController {
   @override
   void onReady() {
+    getTasks();
     super.onReady();
   }
 
@@ -18,5 +19,9 @@ class TaskController extends GetxController {
   void getTasks() async{
     List<Map<String, dynamic>> tasks = await DBHelper.query();
     taskList.assignAll(tasks.map((data) => new Task.fromJson(data)).toList());
+  }
+
+  void delete(Task task) {
+    DBHelper.delete(task);
   }
 }

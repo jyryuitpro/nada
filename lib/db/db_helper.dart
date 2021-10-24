@@ -44,4 +44,8 @@ class DBHelper {
     print('query function called');
     return await _db!.query(_tableName);
   }
+
+  static delete(Task task) async{
+    return await _db!.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
+  }
 }
