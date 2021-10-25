@@ -12,7 +12,7 @@ class DBHelper {
     }
 
     try {
-      String _path = await getDatabasesPath() + 'tasks.db';
+      String _path = await getDatabasesPath() + '/tasks.db';
       print('===== path: $_path');
       _db = await openDatabase(
         _path,
@@ -47,5 +47,13 @@ class DBHelper {
 
   static delete(Task task) async{
     return await _db!.delete(_tableName, where: 'id = ?', whereArgs: [task.id]);
+  }
+
+  static update(int id) async{
+    return await _db!.rawUpdate('''
+      UPDATE tasks
+      SET isCompleted = ?
+      WHERE id = ?
+    ''', [1, id]);
   }
 }

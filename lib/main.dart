@@ -20,6 +20,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    print('===== Get.isDarkMode: ${Get.isDarkMode}');
+    print('===== ThemeServices().theme: ${ThemeServices().theme}');
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
         splash: Image.asset('images/splash.png'),
         nextScreen: const HomePage(),
         splashTransition: SplashTransition.fadeTransition ,
-        backgroundColor: Get.isDarkMode ? Colors.black : Colors.white,
+        backgroundColor: ThemeServices().theme == ThemeMode.dark ? Colors.black : Colors.white,
       ),
     );
   }

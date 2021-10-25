@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:nada/controllers/task_controller.dart';
+import 'package:nada/models/task.dart';
 import 'package:nada/services/notification_services.dart';
 import 'package:nada/services/theme_services.dart';
 import 'package:nada/ui/add_task_page.dart';
@@ -56,28 +57,158 @@ class _HomePageState extends State<HomePage> {
         return ListView.builder(
           itemCount: _taskController.taskList.length,
           itemBuilder: (context, index) {
-            print(
-                '===== _taskController.taskList.length: ${_taskController.taskList.length}');
-            return AnimationConfiguration.staggeredList(
-              position: index,
-              child: SlideAnimation(
-                child: FadeInAnimation(
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          print('Tapped');
-                        },
-                        child: TaskTile(_taskController.taskList[index]),
-                      ),
-                    ],
+            Task task = _taskController.taskList[index];
+            print(task.toJson());
+            if(task.repeat == 'Daily') {
+              DateTime date = DateFormat.jm().parse(task.startTime.toString());
+              var myTime = DateFormat('HH:mm').format(date);
+              notifyHelper.scheduledNotification(
+                int.parse(myTime.toString().split(':')[0]),
+                int.parse(myTime.toString().split(':')[1]),
+                task,
+              );
+
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(
+                                context, task);
+                          },
+                          child: TaskTile(task),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            );
+              );
+            }
+            if(task.date == DateFormat.yMd().format(_selectedDate)) {
+              return AnimationConfiguration.staggeredList(
+                position: index,
+                child: SlideAnimation(
+                  child: FadeInAnimation(
+                    child: Row(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            _showBottomSheet(
+                                context, task);
+                          },
+                          child: TaskTile(task),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              return Container();
+            }
           },
         );
       }),
+    );
+  }
+
+  _showBottomSheet(BuildContext context, Task task) {
+    Get.bottomSheet(
+      Container(
+        padding: const EdgeInsets.only(top: 4),
+        height: task.isCompleted == 1
+            ? MediaQuery.of(context).size.height * 0.24
+            : MediaQuery.of(context).size.height * 0.32,
+        color: Get.isDarkMode ? darkGreyClr : Colors.white,
+        child: Column(
+          children: [
+            Container(
+              height: 6,
+              width: 120,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Get.isDarkMode ? Colors.grey[600] : Colors.grey[300],
+              ),
+            ),
+            Spacer(),
+            task.isCompleted == 1
+                ? Container()
+                : _bottomSheetButton(
+                    lable: 'Task Completed',
+                    onTap: () {
+                      _taskController.markTaskCompleted(task.id!);
+                      Get.back();
+                    },
+                    clr: primaryClr,
+                    context: context,
+                  ),
+            _bottomSheetButton(
+              lable: 'Delete Task',
+              onTap: () {
+                _taskController.delete(task);
+                Get.back();
+              },
+              clr: Colors.red[300]!,
+              context: context,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            _bottomSheetButton(
+              lable: 'Close',
+              onTap: () {
+                Get.back();
+              },
+              clr: Colors.red[300]!,
+              isClose: true,
+              context: context,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _bottomSheetButton(
+      {required String lable,
+      required Function()? onTap,
+      required Color clr,
+      bool isClose = false,
+      required BuildContext context}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        margin: const EdgeInsets.symmetric(
+          vertical: 4,
+        ),
+        height: 55,
+        width: MediaQuery.of(context).size.width * 0.9,
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 2,
+            color: isClose == true
+                ? Get.isDarkMode
+                    ? Colors.grey[600]!
+                    : Colors.grey[300]!
+                : clr,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          color: isClose == true ? Colors.transparent : clr,
+        ),
+        child: Center(
+          child: Text(
+            lable,
+            style:
+                isClose ? titleStyle : titleStyle.copyWith(color: Colors.white),
+          ),
+        ),
+      ),
     );
   }
 
@@ -163,14 +294,16 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: context.theme.backgroundColor,
       leading: GestureDetector(
         onTap: () {
+          print('===== Get.isDarkMode: ${Get.isDarkMode}');
+          print('===== ThemeServices().theme: ${ThemeServices().theme}');
           ThemeServices().switchTheme();
-          notifyHelper.displayNotification(
-              title: "Theme Changed",
-              body: Get.isDarkMode
-                  ? "Activated Light Theme"
-                  : "Activated Dark Theme");
+          // notifyHelper.displayNotification(
+          //     title: "Theme Changed",
+          //     body: Get.isDarkMode
+          //         ? "Activated Light Theme"
+          //         : "Activated Dark Theme");
 
-          notifyHelper.scheduledNotification();
+          // notifyHelper.scheduledNotification();
         },
         child: Icon(
           Get.isDarkMode ? Icons.wb_sunny_outlined : Icons.nightlight_round,
