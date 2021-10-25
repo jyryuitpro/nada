@@ -1,6 +1,7 @@
 import 'package:date_picker_timeline/date_picker_timeline.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -54,63 +55,75 @@ class _HomePageState extends State<HomePage> {
   _showTasks() {
     return Expanded(
       child: Obx(() {
-        return ListView.builder(
-          itemCount: _taskController.taskList.length,
-          itemBuilder: (context, index) {
-            Task task = _taskController.taskList[index];
-            print(task.toJson());
-            if(task.repeat == 'Daily') {
-              DateTime date = DateFormat.jm().parse(task.startTime.toString());
-              var myTime = DateFormat('HH:mm').format(date);
-              notifyHelper.scheduledNotification(
-                int.parse(myTime.toString().split(':')[0]),
-                int.parse(myTime.toString().split(':')[1]),
-                task,
-              );
+        if (_taskController.taskList.isEmpty) {
+          return _noTaskMsg();
+        } else {
+          return ListView.builder(
+            itemCount: _taskController.taskList.length,
+            itemBuilder: (context, index) {
+              Task task = _taskController.taskList[index];
+              print(task.toJson());
+              if (task.repeat == 'Daily') {
+                DateTime date =
+                    DateFormat.jm().parse(task.startTime.toString());
+                var myTime = DateFormat('HH:mm').format(date);
+                notifyHelper.scheduledNotification(
+                  int.parse(myTime.toString().split(':')[0]),
+                  int.parse(myTime.toString().split(':')[1]),
+                  task,
+                );
 
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: SlideAnimation(
-                  child: FadeInAnimation(
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showBottomSheet(
-                                context, task);
-                          },
-                          child: TaskTile(task),
-                        ),
-                      ],
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  child: SlideAnimation(
+                    child: FadeInAnimation(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, task);
+                            },
+                            child: TaskTile(task),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            }
-            if(task.date == DateFormat.yMd().format(_selectedDate)) {
-              return AnimationConfiguration.staggeredList(
-                position: index,
-                child: SlideAnimation(
-                  child: FadeInAnimation(
-                    child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            _showBottomSheet(
-                                context, task);
-                          },
-                          child: TaskTile(task),
-                        ),
-                      ],
+                );
+              }
+              if (task.date == DateFormat.yMd().format(_selectedDate)) {
+                DateTime date =
+                    DateFormat.jm().parse(task.startTime.toString());
+                var myTime = DateFormat('HH:mm').format(date);
+                notifyHelper.scheduledNotification(
+                  int.parse(myTime.toString().split(':')[0]),
+                  int.parse(myTime.toString().split(':')[1]),
+                  task,
+                );
+
+                return AnimationConfiguration.staggeredList(
+                  position: index,
+                  child: SlideAnimation(
+                    child: FadeInAnimation(
+                      child: Row(
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              _showBottomSheet(context, task);
+                            },
+                            child: TaskTile(task),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            } else {
-              return Container();
-            }
-          },
-        );
+                );
+              } else {
+                return Container();
+              }
+            },
+          );
+        }
       }),
     );
   }
@@ -323,6 +336,43 @@ class _HomePageState extends State<HomePage> {
         ),
         SizedBox(
           width: 20,
+        ),
+      ],
+    );
+  }
+
+  _noTaskMsg() {
+    return Stack(
+      children: [
+        AnimatedPositioned(
+          duration: Duration(milliseconds: 2000),
+          // left: left,
+          // top:top,
+          child: Container(
+              child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SvgPicture.asset(
+                "images/task.svg",
+                color: primaryClr.withOpacity(0.5),
+                height: 90,
+                semanticsLabel: 'Task',
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                child: Text(
+                  "You do not have any tasks yet!\nAdd new tasks to make your days productive.",
+                  textAlign: TextAlign.center,
+                  style: subTitleStyle,
+                ),
+              ),
+              SizedBox(
+                height: 80,
+              ),
+            ],
+          )),
         ),
       ],
     );

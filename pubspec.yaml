@@ -44,6 +44,7 @@ dependencies:
   sqflite:
   flutter_staggered_animations:
   animated_splash_screen:
+  flutter_svg:
 
 dev_dependencies:
   flutter_test:
